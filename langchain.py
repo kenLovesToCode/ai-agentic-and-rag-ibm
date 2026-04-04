@@ -1,4 +1,5 @@
 # https://labs.cognitiveclass.ai/v2/tools/jupyterlab?ulid=ulid-90ba3b2da2f46e2f2081bf7d493c8d180927e667
+# https://labs.cognitiveclass.ai/v2/tools/jupyterlab?ulid=ulid-2e57cf375463023347cd8ffe95cb39c9b1b43312
 
 # !pip install "ibm-watsonx-ai==1.0.8" --user
 # !pip install "langchain==0.2.11" --user
