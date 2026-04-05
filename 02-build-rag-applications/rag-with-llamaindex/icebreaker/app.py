@@ -4,7 +4,9 @@ import os
 import sys
 import logging
 import uuid
+import inspect
 import gradio as gr
+from starlette.templating import Jinja2Templates
 
 from modules.data_extraction import extract_linkedin_profile
 from modules.data_processing import split_profile_data, create_vector_database, verify_embeddings
@@ -25,6 +27,27 @@ logger = logging.getLogger(__name__)
 
 # Dictionary to store active conversations
 active_indices = {}
+
+
+def _patch_starlette_template_response():
+    """Bridge Gradio 4.x with newer Starlette TemplateResponse signatures."""
+    template_response = Jinja2Templates.TemplateResponse
+    parameter_names = list(inspect.signature(template_response).parameters)
+
+    if len(parameter_names) < 3 or parameter_names[1] != "request":
+        return
+
+    def _compatible_template_response(self, *args, **kwargs):
+        if len(args) >= 2 and isinstance(args[0], str) and isinstance(args[1], dict):
+            request = args[1].get("request")
+            if request is not None:
+                return template_response(self, request, args[0], args[1], *args[2:], **kwargs)
+        return template_response(self, *args, **kwargs)
+
+    Jinja2Templates.TemplateResponse = _compatible_template_response
+
+
+_patch_starlette_template_response()
 
 def process_profile(linkedin_url, api_key, use_mock, selected_model):
     """Process a LinkedIn profile and generate initial facts.
@@ -115,9 +138,9 @@ def chat_with_profile(session_id, user_query, chat_history):
         
         # Answer the user's query
         response = answer_user_query(index, user_query)
-
+        
         # Update chat history
-        return chat_history + [[user_query, response]]
+        return chat_history + [[user_query, response.response]]
     
     except Exception as e:
         logger.error(f"Error in chat_with_profile: {e}")
@@ -127,7 +150,7 @@ def create_gradio_interface():
     """Create the Gradio interface for the Icebreaker Bot."""
     # Define available LLM models
     available_models = [
-        "ibm/granite-3-1-8b-base",
+        "mistralai/mistral-small-3-1-24b-instruct-2503",
         "meta-llama/llama-3-3-70b-instruct"
     ]
     
