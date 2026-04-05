@@ -55,7 +55,7 @@ def create_vector_database(nodes: List) -> Optional[VectorStoreIndex]:
         index = VectorStoreIndex(
             nodes=nodes,
             embed_model=embedding_model,
-            show_progress=False
+            show_progress=True
         )
         
         logger.info("Vector database created successfully")
@@ -83,6 +83,8 @@ def verify_embeddings(index: VectorStoreIndex) -> bool:
             if embedding is None:
                 logger.warning(f"Node ID {node_id} has a None embedding.")
                 missing_embeddings = True
+            else:
+                logger.debug(f"Node ID {node_id} has a valid embedding.")
         
         if missing_embeddings:
             logger.warning("Some node embeddings are missing")

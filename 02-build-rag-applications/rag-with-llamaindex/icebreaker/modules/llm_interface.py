@@ -11,7 +11,6 @@ import config
 
 logger = logging.getLogger(__name__)
 
-# This function creates the embedding model that converts text into vector representations. It should return a WatsonxEmbeddings instance configured with the correct model ID, URL, and project ID from our config file. This embedding model will be used to transform LinkedIn profile data chunks into vectors for semantic search.
 def create_watsonx_embedding() -> WatsonxEmbeddings:
     """Creates an IBM Watsonx Embedding model for vector representation.
     
@@ -27,7 +26,6 @@ def create_watsonx_embedding() -> WatsonxEmbeddings:
     logger.info(f"Created Watsonx Embedding model: {config.EMBEDDING_MODEL_ID}")
     return watsonx_embedding
 
-# This function creates the language model that generates responses to user queries. It should return a WatsonxLLM instance configured with parameters that control the generation process, such as temperature (for randomness), token limits, and decoding methods. This LLM will be responsible for generating interesting facts and answering questions about LinkedIn profiles.
 def create_watsonx_llm(
     temperature: float = config.TEMPERATURE,
     max_new_tokens: int = config.MAX_NEW_TOKENS,
@@ -62,7 +60,6 @@ def create_watsonx_llm(
     logger.info(f"Created Watsonx LLM model: {config.LLM_MODEL_ID}")
     return watsonx_llm
 
-# This utility function allows us to dynamically switch between different language models at runtime. It should update the LLM model ID in our config and log the change. This flexibility enables experimenting with different models to compare their performance on icebreaker generation tasks.
 def change_llm_model(new_model_id: str) -> None:
     """Change the LLM model to use.
     

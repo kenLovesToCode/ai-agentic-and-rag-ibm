@@ -10,9 +10,8 @@ import config
 
 logger = logging.getLogger(__name__)
 
-#This function creates engaging conversation starters based on a person's LinkedIn profile. It should create a watsonx LLM with appropriate parameters for fact generation, construct a prompt template using our predefined template from the config, build a query engine that combines the index with the LLM and prompt, and then execute a query to generate three interesting facts about the person.
 def generate_initial_facts(index: VectorStoreIndex) -> str:
-    """Generates interesting facts about the person's career or education.
+    """Generates interesting facts about the person\'s career or education.
     
     Args:
         index: VectorStoreIndex containing the LinkedIn profile data.
@@ -40,7 +39,7 @@ def generate_initial_facts(index: VectorStoreIndex) -> str:
         )
         
         # Execute the query
-        query = "Provide three interesting facts about this person's career or education."
+        query = "Provide three interesting facts about this person\'s career or education."
         response = query_engine.query(query)
         
         # Return the facts
@@ -49,23 +48,22 @@ def generate_initial_facts(index: VectorStoreIndex) -> str:
         logger.error(f"Error in generate_initial_facts: {e}")
         return "Failed to generate initial facts."
 
-# This function powers the interactive Q&A capability of our bot. It should create a watsonx LLM optimized for question answering (using different parameters than fact generation), retrieve the most relevant nodes from our vector index based on the user's query, build a context string from these nodes, create a query engine with our question-answering prompt template, and execute the query to generate a precise answer. This function implements the complete RAG (Retrieval-Augmented Generation) workflow that enables accurate, context-aware responses about the LinkedIn profile.
 def answer_user_query(index: VectorStoreIndex, user_query: str) -> Any:
-    """Answers the user's question using the vector database and the LLM.
+    """Answers the user\'s question using the vector database and the LLM.
     
     Args:
         index: VectorStoreIndex containing the LinkedIn profile data.
-        user_query: The user's question.
+        user_query: The user\'s question.
         
     Returns:
-        Response object containing the answer to the user's question.
+        Response object containing the answer to the user\'s question.
     """
     try:
         # Create LLM for answering questions
         watsonx_llm = create_watsonx_llm(
-            temperature=0.0, # Makes the output more deterministic and focused on factual information
-            max_new_tokens=250, # Allows for a detailed response
-            decoding_method="greedy" # e.g. "sample"; Introduces some variation while maintaining factuality
+            temperature=0.0,
+            max_new_tokens=250,
+            decoding_method="greedy"
         )
         
         # Create prompt template
@@ -80,7 +78,7 @@ def answer_user_query(index: VectorStoreIndex, user_query: str) -> Any:
         
         # Create query engine
         query_engine = index.as_query_engine(
-            streaming=False, #Wait for the full response rather than streaming it
+            streaming=False,
             similarity_top_k=config.SIMILARITY_TOP_K,
             llm=watsonx_llm,
             text_qa_template=question_prompt

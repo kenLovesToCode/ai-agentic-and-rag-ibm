@@ -115,9 +115,9 @@ def chat_with_profile(session_id, user_query, chat_history):
         
         # Answer the user's query
         response = answer_user_query(index, user_query)
-        
+
         # Update chat history
-        return chat_history + [[user_query, response.response]]
+        return chat_history + [[user_query, response]]
     
     except Exception as e:
         logger.error(f"Error in chat_with_profile: {e}")

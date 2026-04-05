@@ -8,7 +8,7 @@ import argparse
 from modules.data_extraction import extract_linkedin_profile
 from modules.data_processing import split_profile_data, create_vector_database, verify_embeddings
 from modules.query_engine import generate_initial_facts, answer_user_query
-from typing import Dict, Any, Optional
+import config
 
 # Set up logging
 logging.basicConfig(
@@ -21,7 +21,6 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-#This function serves as the core orchestrator of our application. It should coordinate the entire RAG pipeline by first extracting LinkedIn profile data (either via API or from mock data), then splitting this data into manageable nodes, creating a vector database from these nodes, verifying that embeddings were properly created, generating initial conversation starters about the person, and finally launching the interactive chatbot interface. This function handles the end-to-end workflow from raw LinkedIn URL to a fully functional conversational assistant.
 def process_linkedin(linkedin_url, api_key=None, mock=False):
     """
     Processes a LinkedIn URL, extracts data from the profile, and interacts with the user.
@@ -65,7 +64,6 @@ def process_linkedin(linkedin_url, api_key=None, mock=False):
     except Exception as e:
         logger.error(f"Error occurred: {str(e)}")
 
-#This function creates a user-friendly command-line interface for interacting with our bot. It should display clear instructions to the user, create a loop that processes user questions about the LinkedIn profile, retrieve answers using our query engine, display these answers in a conversational format, and provide a clean exit mechanism.
 def chatbot_interface(index):
     """
     Provides a simple chatbot interface for user interaction.
@@ -93,9 +91,9 @@ def main():
     """Main function to run the Icebreaker Bot."""
     parser = argparse.ArgumentParser(description='Icebreaker Bot - LinkedIn Profile Analyzer')
     parser.add_argument('--url', type=str, help='LinkedIn profile URL')
-    parser.add_argument('--api-key', type=str, help='ProxyCurl API key')
+    parser.add_argument('--api-key', type=str, help='API key')
     parser.add_argument('--mock', action='store_true', help='Use mock data instead of API')
-    parser.add_argument('--model', type=str, help='LLM model to use (e.g., "ibm/granite-3-1-8b-base")')
+    parser.add_argument('--model', type=str, help='LLM model to use (e.g., "ibm/granite-3-2-8b-instruct")')
     
     args = parser.parse_args()
     

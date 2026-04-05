@@ -37,13 +37,11 @@ def extract_linkedin_profile(
                 raise ValueError("ProxyCurl API key is required when mock is set to False.")
             
             logger.info("Starting to extract the LinkedIn profile...")
-
             # Set up the API endpoint and headers
             api_endpoint = "https://nubela.co/proxycurl/api/v2/linkedin"
             headers = {
                 "Authorization": f"Bearer {api_key}"
             }
-
             # Prepare parameters for the request
             params = {
                 "url": linkedin_profile_url,
@@ -54,14 +52,11 @@ def extract_linkedin_profile(
                 "personal_email": "include",
                 "personal_contact_number": "include"
             }
-
             logger.info(f"Sending API request to ProxyCurl at {time.time() - start_time:.2f} seconds...")
-
             # Send API request
             response = requests.get(api_endpoint, headers=headers, params=params, timeout=10)
         
         logger.info(f"Received response at {time.time() - start_time:.2f} seconds...")
-
         # Check if response is successful
         if response.status_code == 200:
             try:
@@ -74,12 +69,10 @@ def extract_linkedin_profile(
                     for k, v in data.items()
                     if v not in ([], "", None) and k not in ["people_also_viewed", "certifications"]
                 }
-
                 # Remove profile picture URLs from groups to clean the data
                 if data.get("groups"):
                     for group_dict in data.get("groups"):
                         group_dict.pop("profile_pic_url", None)
-
                 return data
             except ValueError as e:
                 logger.error(f"Error parsing JSON response: {e}")
